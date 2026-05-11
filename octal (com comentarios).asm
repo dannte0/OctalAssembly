@@ -6,37 +6,54 @@
 	#Tratamentos de erros
 	#Se numero digitado for = 0
 	paraZero:.asciiz"Numero não pode ser igual a zero.\nDigite novamente: "
-
+	paraMenorZero:.asciiz"Numero não pode ser menor que zero.\nDigite novamente: "
 .text
 main:
 	#Digite um numero octal (8):
 	li $v0, 4
 	la $a0, msgEntrada
 	syscall
-	#input
 	li $v0, 5
 	syscall
-	#$t0 <- input
 	add $t0, $v0, $zero
 	#se $t0 == 0
 	beqz $t0, seZero
+	#se $t0 < 0
+	bltz $t0, seMenorZero
 	#senão
-	j senaoZero
+	j seMaiorZero
 	
 seZero: 
 	#Numero não pode ser igual a zero. Digite novamente: "
 	li $v0, 4
 	la $a0, paraZero
 	syscall
-	#input
 	li $v0, 5
 	syscall
-	#$t0 <- input
 	add $t0, $v0, $zero
 	#se $t0 == 0
 	beqz $t0, seZero
+	#se $t0 < 0
+	bltz $t0, seMenorZero
+	#senão
+	j seMaiorZero
 	
-senaoZero:
+seMenorZero:
+	#"Numero não pode ser menor que zero.\nDigite novamente: "
+	li $v0, 4
+	la $a0, paraMenorZero
+	syscall
+	li $v0, 5
+	syscall
+	add $t0, $v0, $zero
+	#se $t0 == 0
+	beqz $t0, seZero
+	#se $t0 < 0
+	bltz $t0, seMenorZero
+	#senão
+	j seMaiorZero
+	
+seMaiorZero:
 	#copia input
 	add $t8, $t0, $zero
 	#Etapa para descobrir a quantidade de casas

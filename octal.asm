@@ -4,6 +4,7 @@
 	saida2:.asciiz" é octal.\n"
 	saidaFalso:.asciiz" não"
 	paraZero:.asciiz"Numero não pode ser igual a zero.\nDigite novamente: "
+	paraMenorZero:.asciiz"Numero não pode ser menor que zero.\nDigite novamente: "
 
 .text
 main:
@@ -14,7 +15,8 @@ main:
 	syscall
 	add $t0, $v0, $zero
 	beqz $t0, seZero
-	j senaoZero
+	bltz $t0, seMenorZero
+	j seMaiorZero
 	
 seZero: 
 	li $v0, 4
@@ -24,8 +26,21 @@ seZero:
 	syscall
 	add $t0, $v0, $zero
 	beqz $t0, seZero
+	bltz $t0, seMenorZero
+	j seMaiorZero
 	
-senaoZero:
+seMenorZero:
+	li $v0, 4
+	la $a0, paraMenorZero
+	syscall
+	li $v0, 5
+	syscall
+	add $t0, $v0, $zero
+	beqz $t0, seZero
+	bltz $t0, seMenorZero
+	j seMaiorZero
+	
+seMaiorZero:
 	add $t8, $t0, $zero
 	enquantoNaoZero:
 	div $t8, $t8, 10
